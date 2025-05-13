@@ -1,0 +1,91 @@
+@baseUrl = http://localhost:7000/api
+@authToken = 
+
+### ----------------------------------------
+### AUTHENTICATION ENDPOINTS
+### ----------------------------------------
+
+### 🔹 Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "admin",
+  "lastName": "User",
+  "username": "@admin21",
+  
+"email":"",
+  "password": "123456",
+  "role": "admin"
+}
+
+### 🔹 Login a user
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+ 
+  "email":"john.doe11@example.com",
+  "password": "123456"
+
+}
+
+### 🔹 Login a admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "123456"
+}
+
+
+### 🔹 Access protected profile route (Requires token)
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+
+### 🔹 Access admin-only route (Requires admin token)
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+
+### 🔹 Access user dashboard (Accessible by both users and admins)
+GET {{baseUrl}}/users/get-profile
+Authorization: Bearer {{authToken}}
+
+
+### 🔹 Forgot Password - Send OTP
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": ""
+}
+
+### 🔹 Verify OTP
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "",
+  "otp": "514946"
+}
+
+### 🔹 Reset Password
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "",
+  "newPassword": ""
+}
+
+### 🔹 Assign Role
+POST {{baseUrl}}/assign-role
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "email": "",
+  "role": "writer"
+}
+

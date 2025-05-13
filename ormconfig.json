@@ -1,0 +1,10 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "immad",
+    "password": "pass",
+    "database": "speechydb",
+    "entities": ["src/entity/*.ts"],
+    "synchronize": true
+  }
