@@ -32,6 +32,6 @@ const { uploadImage } = require('../controllers/imageController');
  */
 
 // router.post('/upload-image', upload.single('profileImg'), uploadImage);
-router.post('/upload-image', upload.single('profileImg'), uploadImage);
+router.post('/upload-image',authMiddleware, upload.single('profileImg'), uploadImage);
 
 module.exports = router;

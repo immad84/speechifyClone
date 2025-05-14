@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/audio', express.static(path.join(__dirname, 'public/audio')));
+app.use(cors());
 
 // Setup Swagger
 setupSwagger(app);
@@ -34,7 +35,13 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
 });
 
+
+app.use(cors({
+  origin: 'https://3c61-203-128-20-169.ngrok-free.app'
+}));
+
+
 // Start Server
-app.listen(port, () => {
+app.listen(port,() => {
   console.log(`Server is running on port ${port}`);
 });

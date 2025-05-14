@@ -56,7 +56,6 @@ Authorization: Bearer {{authToken}}
 ### 🔹 Forgot Password - Send OTP
 POST {{baseUrl}}/auth/forgot-password
 Content-Type: application/json
-
 {
   "email": ""
 }

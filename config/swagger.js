@@ -14,7 +14,8 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 4000}/api`,
+        url: process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 4000}/api`,
+        description: "Dynamic API URL"
       },
     ],
     components: {
