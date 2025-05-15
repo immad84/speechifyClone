@@ -6,12 +6,24 @@ const setupSwagger = require("./config/swagger");
 const adminRoutes = require("./routes/adminRoutes");
 require("dotenv").config();
 const imageRoutes = require("./routes/imageRoutes");
+const morgan = require('morgan');
+const moment = require('moment-timezone');
 
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+
 // Connect to Database
 connectDB();
+
+
+morgan.token('timestamp', () => {
+  return moment().tz('Asia/Karachi').format('HH:mm:ss.SSS z');
+});
+const customFormat = ':timestamp :method :url :status';
+app.use(morgan(customFormat));
+
 
 // Middlewares
 app.use(cors({ origin: "*" }));
@@ -41,7 +53,9 @@ app.use(cors({
 }));
 
 
+
 // Start Server
 app.listen(port,() => {
-  console.log(`Server is running on port ${port}`);
+  // console.log(`Server is running on port ${port}`);
+  console.log(`✅ [INFO] Server started and listening on port ${port}............`);
 });

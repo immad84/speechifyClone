@@ -19,9 +19,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify(function (error, success) {
   if (error) {
-    console.error("Email Server Connection Failed..... ",error);
+    console.error("❌ [ERROR] Email Server Connection Failed....................",error);
   } else {
-    console.log("Email Server is Ready To Send Emails..... ");
+    console.log('✅ [INFO] Email service is online and ready....................');
   }
 });
 
@@ -34,9 +34,9 @@ const sendEmail = async (to, subject, text) => {
       subject,
       text,
     });
-    console.log("Email sent successfully!");
+    console.log("✅ [INFO] Email sent successfully!.............................");
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("❌ [ERROR] Error sending email...............................", error);
   }
 };
 
