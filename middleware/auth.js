@@ -11,10 +11,13 @@ exports.authMiddleware = (req, res, next) => {
     const tokenWithoutBearer = token.replace("Bearer ", "");
     const decoded = jwt.verify(tokenWithoutBearer, process.env.SECRET_KEY);
 
+    // console.log(decoded)
     req.user = {
       _id: decoded.id || decoded._id,
+      email: decoded.email,
       role: decoded.role,
     };
+    // req.user = decoded;
 
     next();
   } catch (error) {

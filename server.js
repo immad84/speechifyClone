@@ -21,8 +21,21 @@ connectDB();
 morgan.token('timestamp', () => {
   return moment().tz('Asia/Karachi').format('HH:mm:ss.SSS z');
 });
+morgan.token('user', (req) => {
+  return req.user?.email || 'Guest';
+});
+const alignedLogger = (tokens, req, res) => {
+  const timestamp = tokens.timestamp(req, res).padEnd(20);
+  const method = tokens.method(req, res).padEnd(10);
+  const url = tokens.url(req, res).padEnd(46);
+  const statusCode = tokens.status(req, res);
+  const status = `${statusCode} ${statusCode < 400 ? 'OK ' : 'Bad'}`.padEnd(8);
+  const user = tokens.user(req, res);
+
+  return `${timestamp}${method}${url}${status}${user}`;
+};
 const customFormat = ':timestamp :method :url :status';
-app.use(morgan(customFormat));
+app.use(morgan(alignedLogger));
 
 
 // Middlewares
@@ -49,7 +62,7 @@ app.use((err, req, res, next) => {
 
 
 app.use(cors({
-  origin: 'https://3c61-203-128-20-169.ngrok-free.app'
+  origin: 'https://f8b7-203-128-20-34.ngrok-free.app'
 }));
 
 

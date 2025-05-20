@@ -327,7 +327,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, email: user.email, role: user.role }, 
       process.env.SECRET_KEY,
       { expiresIn: "7d" }
     );
@@ -367,14 +367,14 @@ exports.login = async (req, res) => {
 // Step 1: Send OTP
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
+  // console.log(email);
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // Generate OTP
     const otpCode = crypto.randomInt(100000, 999999).toString();
-    console.log("Generated OTP:", otpCode);
+    // console.log("Generated OTP:", otpCode);
 
     // Store OTP in database
     await Otp.create({ email, otp: otpCode });
