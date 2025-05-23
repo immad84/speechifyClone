@@ -170,6 +170,11 @@ exports.updateProfile = async (req, res) => {
 };
 
 
+exports.gettextToSpeech = async (req, res) => {
+  res.send("Inside get test to speec")
+}
+
+
 // text to speech Controller
 exports.textToSpeech = async (req, res) => {
     const { text } = req.body;
@@ -194,26 +199,29 @@ exports.getStatus = async (req, res) => {
   const response = {
     taskId,
     status: status.status,
-  };exports.getStatus = async (req, res) => {
-    const taskId = req.params.taskId
-    const status = await redis.hgetall('tts_status:${taskId}')
+  };
   
-    if (!status.status)
-      return res.status(404).send({error: 'Task Not Found'})
   
-    const response = {
-      taskId,
-      status: status.status
-    }
+  // exports.getStatus = async (req, res) => {
+  //   const taskId = req.params.taskId
+  //   const status = await redis.hgetall('tts_status:${taskId}')
   
-    if(status.status === 'done' && status.file){
-      response.fileUrl = `${req.protocol}://${req.get('host')}${status.file}`;
-    }
-    res.json(response)
-  }
+  //   if (!status.status)
+  //     return res.status(404).send({error: 'Task Not Found'})
+  
+  //   const response = {
+  //     taskId,
+  //     status: status.status
+  //   }
+  
+  //   if(status.status === 'done' && status.file){
+  //     response.fileUrl = `${req.protocol}://${req.get('host')}/public/audio/${status.file}`;
+  //   }
+  //   res.json(response)
+  // }
 
   if (status.status === 'done' && status.file) {
-    response.fileUrl = `${req.protocol}://${req.get('host')}${status.file}`;
+    response.fileUrl = `${req.protocol}://${req.get('host')}/public${status.file}`;
   }
 
   res.json(response);

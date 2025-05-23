@@ -1,7 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/auth");
 const router = express.Router();
-const { getProfile, updateProfile, textToSpeech, getStatus, getSpeech } = require('../controllers/userController');
+const { getProfile, updateProfile, textToSpeech, getStatus, gettextToSpeech } = require('../controllers/userController');
 const upload = require('../middleware/upload');
 
 
@@ -55,17 +55,23 @@ const upload = require('../middleware/upload');
  * @swagger
  * /users/profile:
  *   get:
- *     summary: Get user profile
+ *     summary: Get list of all TTS models with supported languages
  *     tags: [User]
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: User profile retrieved successfully
+ *         description: List of TTS models retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: Array
+ *               items: 
+ *                 type: object
+ *                 properties: 
+ *                   _id: 
+ *                   type: string
+ *                   example: "6638d230a35b1b2f3898d193"
  *       401:
  *         description: Unauthorized (invalid or missing token)
  *       404:
@@ -152,6 +158,52 @@ router.get('/profile', authMiddleware, getProfile);
 router.put('/profile', authMiddleware, updateProfile);
 
 
+/**
+ * @swagger
+ * /users/text-to-speech:
+ *   get:
+ *     summary: Get all TTS models with supported languages
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of TTS models with their supported languages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                         example: tts_models/en/ek1/tacotron2
+ *                       languages:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             _id:
+ *                               type: string
+ *                               example: 664b9dba2f2d44383bd7e40e
+ *                             name:
+ *                               type: string
+ *                               example: English
+ *       401:
+ *         description: Unauthorized (invalid or missing token)
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get('/text-to-speech', authMiddleware, gettextToSpeech)
 
 
 /**

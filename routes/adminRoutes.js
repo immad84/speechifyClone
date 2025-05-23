@@ -1,7 +1,7 @@
 const express = require("express");
 const { checkPermission } = require("../middleware/permissions");
 const {authMiddleware}=require("../middleware/auth")
-const { assignRole, deleteUser,getAllUsers } = require("../controllers/adminController");
+const { assignRole, deleteUser,getAllUsers, addModel } = require("../controllers/adminController");
 const router = express.Router();
 
 
@@ -85,5 +85,44 @@ router.put("/assign-role", authMiddleware, checkPermission("manage_roles"), assi
  *         description: Unauthorized - Token missing or invalid
  */
 router.delete("/delete-user/:id",authMiddleware, checkPermission("delete_users"), deleteUser);
+
+
+
+/**
+ * @swagger
+ * /admin/add-model:
+ *   post:
+ *     summary: Add a TTS Model (Super Admin only)
+ *     tags: [AdminRoutes]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               modelName:
+ *                 type: string
+ *                 format: uuid
+ *                 example: "tts_models/en/ek1/tacotron2"
+ *               languages:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["en",]
+ *     responses:
+ *       200:
+ *         description: Role updated successfully
+ *       403:
+ *         description: Forbidden - Only super admin can assign roles
+ *       400:
+ *         description: Bad request - Invalid data
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ */
+router.post("/add-model", authMiddleware, checkPermission("manage_roles"), addModel);
+
 
 module.exports = router;

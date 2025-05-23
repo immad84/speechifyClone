@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Role = require("../models/Role");
+const { Model, Language } = require("../models/Model")
 
 /**
  * Get All Users (Admin Only)
@@ -95,3 +96,50 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
+exports.addModel = async (req, res) => {
+  try {
+    const { modelName, languages } = req.body; // userId and role from request body
+
+    let model = await Model.findOne({ name: modelName });
+    if (model) {
+      return res.status(409).json({ message: "Model already exists." });
+    }
+    
+    const languageDocs = await Promise.all(
+      languages.map(async (lang) => {
+        let languageDoc = await Language.findOne({ name: lang });
+        if (!languageDoc) {
+          languageDoc = await Language.create({ name: lang, models: [] });
+        }
+        return languageDoc;
+      })
+    );
+
+    model = await Model.create({
+      name: modelName,
+      languages: languageDocs.map((langDoc) => langDoc._id),
+    });
+
+    await Promise.all(
+      languageDocs.map(async (langDoc) => {
+        if (!langDoc.models.includes(model._id)) {
+          langDoc.models.push(model._id);
+          await langDoc.save();
+        }
+      })
+    );
+
+    res.status(201).json({
+      message: "Model saved successfully",
+      model: {
+        name: model.name,
+        languages: languageDocs.map((lang) => lang.name),
+      },
+    });
+
+  } catch (error) {
+    console.error("Error in saving:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}

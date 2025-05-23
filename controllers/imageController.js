@@ -13,7 +13,8 @@ exports.uploadImage = async (req, res) => {
         });
       }
   
-      const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      // const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      const imageUrl = `${req.protocol}://${req.get('host')}/public/images/${req.file.filename}`;
   
       // Optional: Save imageUrl to user in DB if needed
   
