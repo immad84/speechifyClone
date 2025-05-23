@@ -1,7 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/auth");
 const router = express.Router();
-const { getProfile, updateProfile, textToSpeech, getStatus, gettextToSpeech } = require('../controllers/userController');
+const { getProfile, updateProfile, textToSpeech, getStatus, getTTSModles, getTTSModle } = require('../controllers/userController');
 const upload = require('../middleware/upload');
 
 
@@ -160,7 +160,7 @@ router.put('/profile', authMiddleware, updateProfile);
 
 /**
  * @swagger
- * /users/text-to-speech:
+ * /users/get-tts-models:
  *   get:
  *     summary: Get all TTS models with supported languages
  *     tags: [User]
@@ -168,7 +168,7 @@ router.put('/profile', authMiddleware, updateProfile);
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: List of TTS models with their supported languages
+ *         description: List of TTS models
  *         content:
  *           application/json:
  *             schema:
@@ -203,12 +203,68 @@ router.put('/profile', authMiddleware, updateProfile);
  */
 
 
-router.get('/text-to-speech', authMiddleware, gettextToSpeech)
+router.get('/get-tts-models', authMiddleware, getTTSModles)
+
 
 
 /**
  * @swagger
- * /users/text-to-speech:
+ * /users/get-tts-model/{name}:
+ *   get:
+ *     summary: Get a specific TTS model by name
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Name of The Model.
+ *     responses:
+ *       200:
+ *         description: List of TTS models
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                         example: tts_models/en/ek1/tacotron2
+ *                       languages:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             _id:
+ *                               type: string
+ *                               example: 664b9dba2f2d44383bd7e40e
+ *                             name:
+ *                               type: string
+ *                               example: English
+ *       401:
+ *         description: Unauthorized (invalid or missing token)
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get('/get-tts-model/:name', authMiddleware, getTTSModle)
+
+
+/**
+ * @swagger
+ * /users/synthesis-text-to-speech:
  *   post:
  *     summary: Convert text to speech and stream audio
  *     tags: [User]
@@ -241,7 +297,7 @@ router.get('/text-to-speech', authMiddleware, gettextToSpeech)
  *         description: Server error while fetching or streaming the audio.
  */
 
-router.post('/text-to-speech', authMiddleware, textToSpeech)
+router.post('/synthesis-text-to-speech', authMiddleware, textToSpeech)
 
 
 

@@ -1,25 +1,24 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const Role = require("../models/Role");
 const { v4: uuidv4 } = require("uuid")
 const Redis = require("ioredis")
 const path = require("path")
 
-const axios = require('axios');
+
+const User = require("../models/User");
+const { Model, Language } = require("../models/Model")
+const Role = require("../models/Role");
+
+
 const redis = new Redis()
 
-// Get User Profile
+
+
 exports.getProfile = async (req, res) => {
   try {
     const userId = req.user._id; 
-
-    // const user = await User.findById(userId) 
-    //   .select("-password -verificationToken -__v")
-    //   .populate("role", "name permissions");
-
     const user = await User.findById(userId)
-  .select("-password -verificationToken -__v -role"); // Exclude role entirely
+  .select("-password -verificationToken -__v -role"); 
 
     if (!user) {
       return res.status(404).json({
@@ -52,7 +51,7 @@ exports.getProfile = async (req, res) => {
 };
 
 
-// update Profile Controller
+
 exports.updateProfile = async (req, res) => {
   try {
       const userId = req.user._id;
@@ -170,9 +169,50 @@ exports.updateProfile = async (req, res) => {
 };
 
 
-exports.gettextToSpeech = async (req, res) => {
-  res.send("Inside get test to speec")
-}
+
+// get Models
+exports.getTTSModles = async (req, res) => {
+  try {
+    const models = await Model.find()
+    const names = models.map(model => model.name)
+    res.status(200).json({
+      success: true,
+      message: "Models fetched successfully",
+      data: names,
+    });    
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Something Went Wrong...", 
+        error: error.message})
+  }
+};
+
+
+
+// get A Model
+exports.getTTSModle = async (req, res) => {
+  try {
+    const { name } = req.params
+    const model = await Model.findOne({name: name}).populate("languages")
+
+    if (!model) {
+      return res.status(404).json({
+        success: false,
+        message: 'Model not found',
+      });
+    }
+
+    res
+      .status(200)
+      .json({success: true, message: "Model Fetched Successfully", data: model})
+  } catch (error) {
+    res.status(500).json({success: false, message: "Sometihing went wrong", error: error.message})
+  }
+};
+
 
 
 // text to speech Controller
@@ -200,47 +240,8 @@ exports.getStatus = async (req, res) => {
     taskId,
     status: status.status,
   };
-  
-  
-  // exports.getStatus = async (req, res) => {
-  //   const taskId = req.params.taskId
-  //   const status = await redis.hgetall('tts_status:${taskId}')
-  
-  //   if (!status.status)
-  //     return res.status(404).send({error: 'Task Not Found'})
-  
-  //   const response = {
-  //     taskId,
-  //     status: status.status
-  //   }
-  
-  //   if(status.status === 'done' && status.file){
-  //     response.fileUrl = `${req.protocol}://${req.get('host')}/public/audio/${status.file}`;
-  //   }
-  //   res.json(response)
-  // }
-
   if (status.status === 'done' && status.file) {
     response.fileUrl = `${req.protocol}://${req.get('host')}/public${status.file}`;
   }
-
   res.json(response);
-};
-
-
-// exports.getSpeech = async (req, res) => {
-//     try {
-//       const response = await axios({
-//         url: 'http://localhost:5005/audio',
-//         method: 'GET',
-//         responseType: 'stream'
-//       });
-  
-//       res.setHeader('Content-Type', 'audio/wav');
-//       response.data.pipe(res);
-//     } catch (error) {
-//       console.error('Audio fetch error:', error.message);
-//       res.status(500).send('Could not fetch audio');
-//     }
-//   };
-  
+}

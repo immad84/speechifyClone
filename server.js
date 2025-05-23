@@ -1,51 +1,46 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const morgan = require('morgan');
+require("dotenv").config();
+
 const connectDB = require("./config/db");
 const setupSwagger = require("./config/swagger");
+const authRoutes = require("./routes/authRoutes")
 const adminRoutes = require("./routes/adminRoutes");
-require("dotenv").config();
+const userRoutes = require("./routes/userRoutes")
 const imageRoutes = require("./routes/imageRoutes");
-const morgan = require('morgan');
-const moment = require('moment-timezone');
 
 
-port = process.env.PORT
+
+const port = process.env.PORT
 const app = express();
-
 connectDB();
 setupSwagger(app);
 
-// app.use(cors({ origin: "*" }));
-// app.use(cors());
+
+app.use(cors());
 app.use(morgan("tiny"))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
-// app.use('/audio', express.static(path.join(__dirname, 'public/audio')));
 
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/img", require("./routes/imageRoutes")); 
-app.use("/api/admin", require("./routes/adminRoutes")); 
-
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/img", imageRoutes); 
+app.use("/api/admin", adminRoutes); 
 app.use((err, req, res, next) => {
   console.error(err.message);
   res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
 });
 
 
-// app.use(cors({
-//   origin: 'https://87d9-203-128-20-62.ngrok-free.app'
-//   // origin: 'https://localhost'
-// }));
+app.get("/", (req, res) => {
+  res.redirect('http://localhost:3000/api-docs/')
+})
 
 
-
-// Start Server
 app.listen(port,() => {
-  // console.log(`Server is running on port ${port}`);
   console.log(`✅ [INFO] Server started and listening on port ${port}............`);
 });
