@@ -279,10 +279,18 @@ router.get('/get-tts-model/:name', authMiddleware, getTTSModle)
  *             type: object
  *             required:
  *               - text
+ *               - model
+ *               - language
  *             properties:
  *               text:
  *                 type: string
  *                 example: "Hello, welcome to our platform."
+ *               model: 
+ *                 type: string
+ *                 example: "tts_models/en/ek1/tacotron2"
+ *               language:
+ *                 type: string
+ *                 example: "en"
  *     responses:
  *       200:
  *         description: Successfully streamed the audio.

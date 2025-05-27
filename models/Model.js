@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 
 const ttsModelSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
+  type: {type: String, requied: true},
   languages: [
     {
       type: mongoose.Types.ObjectId,
@@ -10,14 +10,22 @@ const ttsModelSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  name: { type: String, required: true, unique: true },
+  dataset: {type: String, required: true},
 });
+
+
+
+
+
 
 const languageSchema = new mongoose.Schema({
   name: {type: String, required: true},
+  code: {type: String, required: true},
   models: [{
     type: mongoose.Types.ObjectId,
     ref: "Model",
-    required: true
+    // required: true
   }]
 })
 

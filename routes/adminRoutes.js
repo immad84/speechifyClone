@@ -103,24 +103,37 @@ router.delete("/delete-user/:id",authMiddleware, checkPermission("delete_users")
  *           schema:
  *             type: object
  *             properties:
- *               modelName:
+ *               type:
  *                 type: string
- *                 format: uuid
- *                 example: "tts_models/en/ek1/tacotron2"
+ *                 example: "tts_models or vocoder_models"
  *               languages:
  *                 type: array
  *                 items:
  *                   type: string
- *                 example: ["en",]
+ *                 example: [["English","en"], ["French", "fr"]]
+ *               name:
+ *                 type: string
+ *                 example: "tacotron2"
+ *               datasets:
+ *                 type: array
+ *                 items: 
+ *                    type: string
+ *                 example: ["cv", "ljspeech"]
  *     responses:
  *       200:
  *         description: Role updated successfully
+ *       201:
+ *         description: Model saved successfully
  *       403:
  *         description: Forbidden - Only super admin can assign roles
  *       400:
  *         description: Bad request - Invalid data
  *       401:
  *         description: Unauthorized - Token missing or invalid
+ *       409:
+ *         description: Model - Already Exist.
+ *       500:
+ *         description: Error
  */
 router.post("/add-model", authMiddleware, checkPermission("manage_roles"), addModel);
 

@@ -217,14 +217,30 @@ exports.getTTSModle = async (req, res) => {
 
 // text to speech Controller
 exports.textToSpeech = async (req, res) => {
-    const { text } = req.body;
+    const { text, model, language } = req.body;
     const taskId = uuidv4()
 
-    await redis.xadd('tts_stream', '*', 'task_id', taskId, 'text', text)
+    await redis.xadd('tts_stream', '*', 'task_id', taskId, 'text', text, 'model', model, 'language', language)
     await redis.hset('tts_status:${taskId}', 'status', 'queued')
 
-    res.json({taskId})
+    res.json({taskId, status: 'queued'})
 };
+
+
+
+// text to speech Controller
+// exports.textToSpeech = async (req, res) => {
+//   const { text, model, language } = req.body;
+//   const taskId = uuidv4()
+//   const client = redis.createClient()
+
+//   await client.connect()
+
+//   await redis.xadd('tts_stream', '*', 'task_id', taskId, 'text', text, 'model', model, 'language', language)
+//   await redis.hset('tts_status:${taskId}', 'status', 'queued')
+
+//   res.json({taskId})
+// };
 
 
 

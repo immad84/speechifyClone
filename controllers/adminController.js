@@ -97,28 +97,34 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+
 exports.addModel = async (req, res) => {
   try {
-    const { modelName, languages } = req.body; // userId and role from request body
+    // Get data from request Body
+    const { type, languages, name, datasets } = req.body;
 
-    let model = await Model.findOne({ name: modelName });
+    // Check model already exists or not
+    let model = await Model.findOne({ name });
     if (model) {
       return res.status(409).json({ message: "Model already exists." });
     }
-    
+  
+    // Create Language Documents
     const languageDocs = await Promise.all(
-      languages.map(async (lang) => {
-        let languageDoc = await Language.findOne({ name: lang });
-        if (!languageDoc) {
-          languageDoc = await Language.create({ name: lang, models: [] });
-        }
-        return languageDoc;
+      languages.map(async ([name, code]) => {
+        let langDoc = await Language.findOne({name: name})
+        if(!langDoc) {
+          langDoc = await Language.create({name: name, code: code, models: [ ]})
+        } 
+        return langDoc
       })
     );
 
     model = await Model.create({
-      name: modelName,
+      type: type,
       languages: languageDocs.map((langDoc) => langDoc._id),
+      name: modelName,
+      datasets: datasets.map((ds) => ds)
     });
 
     await Promise.all(

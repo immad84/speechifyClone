@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 
 
 app.get("/", (req, res) => {
-  res.redirect('http://localhost:3000/api-docs/')
+  res.redirect('http://localhost:4000/api-docs/')
 })
 
 
