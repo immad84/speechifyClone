@@ -44,7 +44,8 @@ const rolesData = [
       "manage_roles",
       "access_system_settings",
       "view_users", 
-      "delete_users"
+      "delete_users",
+      "add_tts_model"
     ],
   },
 ];
@@ -62,7 +63,8 @@ const permissionsData = [
   "manage_roles",
   "access_system_settings",
   "view_users", 
-  "delete_users"
+  "delete_users", 
+  "add_tts_model"
 ];
 
 

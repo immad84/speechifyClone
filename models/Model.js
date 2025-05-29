@@ -11,12 +11,8 @@ const ttsModelSchema = new mongoose.Schema({
     },
   ],
   name: { type: String, required: true, unique: true },
-  dataset: {type: String, required: true},
+  datasets: [{type: String, required: true}],
 });
-
-
-
-
 
 
 const languageSchema = new mongoose.Schema({

@@ -6,16 +6,16 @@ require("dotenv").config();
 
 const connectDB = require("./config/db");
 const setupSwagger = require("./config/swagger");
-const authRoutes = require("./routes/authRoutes")
+const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const userRoutes = require("./routes/userRoutes")
-const imageRoutes = require("./routes/imageRoutes");
+const userRoutes = require("./routes/userRoutes");
+const imageRoutes = require("./routes/imageRoutes");  
 
 
 
 const port = process.env.PORT
 const app = express();
-connectDB();
+connectDB( );
 setupSwagger(app);
 
 
@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 
 
 app.get("/", (req, res) => {
-  res.redirect('http://localhost:4000/api-docs/')
+  res.redirect('http://localhost:3000/api-docs/')
 })
 
 

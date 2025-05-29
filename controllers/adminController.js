@@ -98,6 +98,84 @@ exports.deleteUser = async (req, res) => {
 };
 
 
+exports.addLanguage = async (req, res) => {
+  try {
+    const {name, code} = req.body
+    let language = await Language.findOne({name})
+    if (language) {
+      res.json({message: 'Language Already Added. '})
+    } else {
+      language = new Language({name, code, models: [ ]})
+      await language.save()
+      res.json({message: language})
+    }
+  } catch (error) {
+    console.log(error)
+    res.json(error)
+  }
+}
+
+
+exports.getAllLanguages = async (req, res) => {
+  try {
+    const languages =await Language.find()
+    if (languages) {
+      let data = [ ]
+      languages.forEach((language) => {
+        const {_id, name, code} = language
+        data.push({id: _id, name, code})
+      })
+      res.json({message: "Languages fetched..", data})
+    } else {
+      res.json({message: "No languages found. "})
+    }
+  } catch (error) {
+    res.json({message: "There is an error", error: error})
+  }
+}
+
+
+exports.getLanguage = async (req, res) => {
+  try {
+    const {name} = req.params
+    const language = await Language.findOne({name})
+    if(language) {
+      const {_id, name, code} = language
+      res.json({message: "Language fetched.", data: {id: _id, name, code}})
+    } else {
+      res.json({message: "Language Not Found ..."})
+    }
+  } catch (error) {
+    res.json({message: "error", error: error})
+  }
+}
+
+
+exports.deleteLanguage = async (req, res) => {
+  try {
+    const {id} = req.params
+    Model.findByIdAndDelete(id, function(err, document) {
+      if (err) {
+        res.json({message: "Error deleting language", error: err});
+     } else {
+      res.json({message: 'Langauge deleted.', data: document})
+     }
+   });
+  } catch (error) {
+    res.json({message: "Error", error: error})
+  }
+}
+
+exports.updateLanguage = async (req, res) => {
+  res.json({message: "inside update Language Controller. "})
+}
+
+exports.patchLanguage = async (req, res) => {
+  res.json({message: "inside patch Languages Controller. "})
+}
+
+
+
 exports.addModel = async (req, res) => {
   try {
     // Get data from request Body
@@ -122,9 +200,10 @@ exports.addModel = async (req, res) => {
 
     model = await Model.create({
       type: type,
-      languages: languageDocs.map((langDoc) => langDoc._id),
-      name: modelName,
-      datasets: datasets.map((ds) => ds)
+      languages: languageDocs.map((langDoc) => langDoc._id), 
+      name: name,
+      // datasets: datasets.map((ds) => ds)
+      datasets: datasets
     });
 
     await Promise.all(
@@ -139,8 +218,10 @@ exports.addModel = async (req, res) => {
     res.status(201).json({
       message: "Model saved successfully",
       model: {
-        name: model.name,
+        type: type,
         languages: languageDocs.map((lang) => lang.name),
+        name: model.name,
+         datasets: datasets
       },
     });
 
