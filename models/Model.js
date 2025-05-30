@@ -21,7 +21,6 @@ const languageSchema = new mongoose.Schema({
   models: [{
     type: mongoose.Types.ObjectId,
     ref: "Model",
-    // required: true
   }]
 })
 

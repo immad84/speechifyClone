@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   
   profilePicture: {
     type: String,
-    default: "https://example.com/default-profile.jpg" // Default dummy URL
+    default: "https://example.com/default-profile.jpg" 
   },
   isVerified: {
     type: Boolean,

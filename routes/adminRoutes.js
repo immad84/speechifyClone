@@ -189,7 +189,7 @@ router.delete("/delete-language/:id", authMiddleware, checkPermission("add_tts_m
 
 /**
  * @swagger
- * /users/update-language:
+ * /admin/update-language:
  *   put:
  *     summary: Update Language (Super Admin)
  *     tags: [AdminRoutes]
@@ -202,6 +202,10 @@ router.delete("/delete-language/:id", authMiddleware, checkPermission("add_tts_m
  *           schema:
  *             type: object
  *             properties:
+ *               id:
+ *                 type: string
+ *                 format: uuid
+ *                 example: "65a7d12b9e3f5a0012d34abc"
  *               name:
  *                 type: string
  *                 example: "Urdu"
@@ -222,8 +226,6 @@ router.delete("/delete-language/:id", authMiddleware, checkPermission("add_tts_m
  *                 message:
  *                   type: string
  *                   example: language updated successfully
- *                 data:
- *                   $ref: '#/components/schemas/User'
  */
 
 router.put("/update-language", authMiddleware, checkPermission("add_tts_model"), updateLanguage);
@@ -303,7 +305,10 @@ router.patch("/patch-language", authMiddleware, checkPermission("add_tts_models"
  *       500:
  *         description: Error
  */
-router.post("/add-model", authMiddleware, checkPermission("manage_roles"), addModel);
+router.post("/add-model", authMiddleware, checkPermission("add_tts_models"), addModel);
+
+
+
 
 
 module.exports = router;
