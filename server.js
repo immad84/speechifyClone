@@ -12,6 +12,7 @@ const userRoutes = require("./routes/userRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const languageRoutes = require("./routes/languageRoutes");
 const modelRoutes = require("./routes/modelRoutes");
+const datasetRoutes = require("./routes/datasetRoutes");
 
 const port = process.env.PORT;
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/img", imageRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/language", languageRoutes);
 app.use("/api/model", modelRoutes);
+app.use("/api/dataset", datasetRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.message);

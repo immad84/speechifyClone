@@ -11,7 +11,6 @@ exports.addModel = async (req, res) => {
     }
     const { name } = req.body;
     let model = await Model.findOne({ name });
-    console.log(model);
     if (model) {
       res
         .status(403)
@@ -19,7 +18,6 @@ exports.addModel = async (req, res) => {
     } else {
       const model_type = req.body["type"];
       const model_name = req.body["name"];
-      console.log(model_name);
       model = new Model({
         type: model_type,
         languages: [],
@@ -51,12 +49,48 @@ exports.addModels = async (req, res) => {
 
 // get all Models
 exports.getAllModels = async (req, res) => {
-  res.status(200).json({ success: true, message: "inside get all models" });
+  try {
+    const options = { limit: 5 };
+    const models = await Model.find({}, null, options);
+    if (models) {
+      let data = [];
+      models.forEach((model) => {
+        const { _id, name, code, languages } = model;
+        data.push({ id: _id, name, code, languages });
+      });
+      res.status(200).json({ status: true, message: "Models fetched..", data });
+    } else {
+      res
+        .status(404)
+        .json({ status: false, message: "No models found. ", data: {} });
+    }
+  } catch (error) {
+    const { message } = error;
+    res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+      error: message,
+    });
+  }
 };
 
 // get a Model
 exports.getModel = async (req, res) => {
-  res.status(200).json({ success: true, message: "inside get a models" });
+  try {
+    const { name } = req.params;
+    const model = await Model.findOne({ name });
+    if (model) {
+      const { _id, type, languages, datasets, name } = model;
+      res.json({
+        message: "Model fetched.",
+        data: { id: _id, type, languages, datasets, name },
+      });
+    } else {
+      res.json({ message: "Model Not Found ..." });
+    }
+  } catch (error) {
+    res.json({ message: "Internal Sever Error", error: error.message });
+  }
 };
 
 // delete Model

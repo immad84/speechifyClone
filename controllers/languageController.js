@@ -39,32 +39,59 @@ exports.addLanguage = async (req, res) => {
 
 // Add Languages into database
 exports.addLanguages = async (req, res) => {
-  const { name } = req.body;
-  let language = await Language.findOne({ name });
-  if (language) {
-    res
-      .status(403)
-      .json({ success: false, message: "Language Already Added. " });
-  } else {
-    const langname = req.body["name"];
-    const langcode = req.body["code"];
-    const modelID = req.body["modelID"];
-    language = new Language({
-      name: langname,
-      code: langcode,
-      models: [modelID],
-    });
-    await language.save();
-    const languageID = language._id;
+  try {
+    const { name, code, modelID } = req.body;
+
+    const language = await Language.findOne({ name });
     const model = await Model.findById(modelID);
-    model.languages.push(languageID);
-    const u = await model.save();
-    const { id, name, code, models } = language;
-    res.status(201).json({
-      success: true,
-      message: "Language Added Successfully..",
-      language,
-      model: u,
+
+    if (!model) {
+      res.status(404).json({ success: false, message: "Model not found." });
+    }
+
+    if (language) {
+      const languageID = language._id;
+      const isModelFoundInLanguage = language.models.some((model) => {
+        model.toString() === modelID;
+      });
+      if (!isModelFoundInLanguage) {
+        language.models.push(modelID);
+        await language.save();
+      }
+
+      const isLanguageFoundInModel = model.languages.some((languageInModel) => {
+        languageInModel.toString() === languageID.toString();
+      });
+      if (!isLanguageFoundInModel) {
+        model.languages.push(languageID);
+        await model.save();
+      }
+
+      res.status(403).json({
+        success: false,
+        message: "language already existed and model is linked with language. ",
+      });
+    } else {
+      const newLanguage = new Language({
+        name,
+        code,
+        models: [modelID],
+      });
+      await newLanguage.save();
+      model.languages.push(newLanguage._id);
+      await model.save();
+      res.status(201).json({
+        success: true,
+        message: "Language Added Successfully.",
+        language: newLanguage,
+        model,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
     });
   }
 };
